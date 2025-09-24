@@ -1,12 +1,13 @@
+#include <map>
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
+      map<int, int> complement;
       for (int i = 0; i < nums.size(); i++) {
-        for (int j = i + 1; j < nums.size(); j++) {
-          if (nums.at(i) + nums.at(j) == target) {
-            return {i, j}
-          }
+        if (complement.contains(target - nums.at(i))) {
+          return {i, complement.at(target - nums.at(i))};
         }
+        complement.insert({nums.at(i), i});
       }
       return {};
     }
