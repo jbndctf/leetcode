@@ -1,36 +1,29 @@
 class Solution {
 public:
-    long long splitArray(vector<int>& nums) {
-        long long left_sum = 0;
-        long long right_sum = 0;
-        int prev = 0;
-        int split = -1;
-        for (int cur : nums) {
-            if (split == -1) {
-                left_sum += prev;
-                if (prev > cur) {
-                    split = prev;
-                    right_sum = cur;
-                }
-            } else {
-                right_sum += cur;
-                if (prev <= cur) {
-                    return -1;
-                }
-            }
-            prev = cur;
+    long long splitArray(vector<int>& arr) {
+        int n = arr.size();
+        int l = 0, r = n - 1;
+        long long lsum = 0, rsum = 0;
+
+        // strictly increasing from left
+        while (l < n - 1 && arr[l] < arr[l + 1]) 
+            lsum += arr[l++];
+
+        // strictly decreasing from right
+        while (r > 0 && arr[r - 1] > arr[r]) 
+            rsum += arr[r--];
+
+        // single peak element
+        if (l == r) {
+            long long option1 = abs((lsum + arr[l]) - rsum);
+            long long option2 = abs(lsum - (rsum + arr[l]));
+            return min(option1, option2);
         }
-        if (nums.size() == 2) {
-            left_sum = nums.at(0);
-            right_sum = nums.at(1);
-            split = 0;
-        } else if (split == -1) {
-            return -1;
+        // flat peak with two equal middle elements
+        else if (r - l == 1 && arr[l] == arr[r]) {
+            return abs(lsum - rsum);
         }
-        long long output = abs(left_sum - right_sum);
-        if (abs(left_sum - split - (right_sum + split)) < output) {
-            output = abs(left_sum - split - (right_sum + split));
-        }
-        return output;
+        // invalid mountain
+        else return -1;
     }
 };
