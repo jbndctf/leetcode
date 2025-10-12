@@ -2,29 +2,30 @@
 #include <iostream>
 using namespace std;
 
-bool isBalanced(map<char, int> freqs) {
-    int oldFreq = 0;
-    for (const auto& pair : freqs) {
-        if (oldFreq == 0) {
-            oldFreq = pair.second;
-        }
-        if (pair.second != oldFreq) {
-            return false;
-        } 
-    }
-    return true;
-}
-
 int longestBalanced(string s) {
     int longestLength = 0;
     for (int i = 0; i < s.length(); i++) {
-        map<char, int> freqs;
-        int currentLength = 0;
+        unordered_map<char, int> freqs;
+        int length = 0;
         for (int j = i; j < s.length(); j++) {
-            currentLength++;
+            length++;
             freqs[s.at(j)]++;
-            if (isBalanced(freqs) && currentLength > longestLength) {
-                longestLength = currentLength;
+            bool isBalanced = true;
+            int prevFreq = -1;
+            for (const auto& pair : freqs) {
+                char c = pair.first;
+                int freq = pair.second;
+                if (prevFreq == -1) {
+                    prevFreq = freq;
+                }
+                if (freq != prevFreq) {
+                    isBalanced = false;
+                }
+            }
+            if (isBalanced) {
+                if (length > longestLength) {
+                    longestLength = length;
+                }
             }
         }
     }
